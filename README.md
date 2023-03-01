@@ -7,3 +7,6 @@ This repo contains the original code, predicted questions and a functional answe
 Switch between branches to view different questions and fixes
 
 ### Contents:
+1. [Add Move]()
+2. [Randomise Move Queue]()
+3. [Set Piece]()
