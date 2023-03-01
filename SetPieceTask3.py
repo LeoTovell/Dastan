@@ -132,15 +132,34 @@ class Dastan:
         while not GameOver:
             self.__DisplayState()
             SquareIsValid = False
+
+            # RANDOMLY SELECT A PIECE FOR THE PLAYER:
+            playerPieces = []
+            for piece in self._Board:
+                if type(piece) is not Kotla:
+                    # player = piece.GetPieceInSquare().GetBelongsTo()
+                    if piece.GetPieceInSquare():
+                        if piece.GetPieceInSquare().GetBelongsTo() is self._CurrentPlayer:
+                            playerPieces.append(piece)
+            chosenPiece = random.choice(playerPieces)
+            chosenPieceIndex = self._Board.index(chosenPiece)
+            #Get referece from index:
+            row = (chosenPieceIndex // self._NoOfRows) + 1
+            col = (chosenPieceIndex % self._NoOfRows) + 1
+            StartSquareReference = int(f"{row}{col}")
+            print(f"Piece chosen: row {row}, col {col}")
+
+
             Choice = 0
             while Choice < 1 or Choice > 3:
                 Choice = int(input("Choose move option to use from queue (1 to 3) or 9 to take the offer: "))
                 if Choice == 9:
                     self.__UseMoveOptionOffer()
                     self.__DisplayState()
-            while not SquareIsValid:
-                StartSquareReference = self.__GetSquareReference("containing the piece to move")
-                SquareIsValid = self.__CheckSquareIsValid(StartSquareReference, True)
+            # INSTEAD OF THEM CHOOSING: WE CHOOSE! AS ABOE
+            # while not SquareIsValid:
+            #     StartSquareReference = self.__GetSquareReference("containing the piece to move")
+            #     SquareIsValid = self.__CheckSquareIsValid(StartSquareReference, True)
             SquareIsValid = False
             while not SquareIsValid:
                 FinishSquareReference = self.__GetSquareReference("to move to")
@@ -196,7 +215,6 @@ class Dastan:
         self._Board[self.__GetIndexOfSquare(self._NoOfRows * 10 + (self._NoOfColumns // 2 + 1))].SetPiece(CurrentPiece)
 
     def __CreateMoveOptionOffer(self):
-        self._MoveOptionOffer.append("movelikeaking")
         self._MoveOptionOffer.append("jazair")
         self._MoveOptionOffer.append("chowkidar")
         self._MoveOptionOffer.append("cuirassier")
@@ -273,26 +291,6 @@ class Dastan:
         NewMoveOption.AddToPossibleMoves(NewMove)
         return NewMoveOption
 
-    def __CreateMoveLikeAKingMoveOption(self, Direction):
-        NewMoveOption = MoveOption("movelikeaking")
-        NewMove = Move(1*Direction, 0)
-        NewMoveOption.AddToPossibleMoves(NewMove)
-        NewMove = Move(1*Direction, 1*Direction)
-        NewMoveOption.AddToPossibleMoves(NewMove)
-        NewMove = Move(0, 1*Direction)
-        NewMoveOption.AddToPossibleMoves(NewMove)
-        NewMove = Move(-1*Direction, 1*Direction)
-        NewMoveOption.AddToPossibleMoves(NewMove)
-        NewMove = Move(-1*Direction, 0)
-        NewMoveOption.AddToPossibleMoves(NewMove)
-        NewMove = Move(-1*Direction, -1*Direction)
-        NewMoveOption.AddToPossibleMoves(NewMove)
-        NewMove = Move(0, -1*Direction)
-        NewMoveOption.AddToPossibleMoves(NewMove)
-        NewMove = Move(1*Direction, -1*Direction)
-        NewMoveOption.AddToPossibleMoves(NewMove)
-        return NewMoveOption
-
     def __CreateMoveOption(self, Name, Direction):
         if Name == "chowkidar":
             return self.__CreateChowkidarMoveOption(Direction)
@@ -302,8 +300,6 @@ class Dastan:
             return self.__CreateFaujdarMoveOption(Direction)
         elif Name == "jazair":
             return self.__CreateJazairMoveOption(Direction)
-        elif Name == "movelikeaking":
-            return self.__CreateMoveLikeAKingMoveOption(Direction)
         else:
             return self.__CreateCuirassierMoveOption(Direction)
 
@@ -313,13 +309,11 @@ class Dastan:
         self._Players[0].AddToMoveOptionQueue(self.__CreateMoveOption("cuirassier", 1))
         self._Players[0].AddToMoveOptionQueue(self.__CreateMoveOption("faujdar", 1))
         self._Players[0].AddToMoveOptionQueue(self.__CreateMoveOption("jazair", 1))
-        self._Players[0].AddToMoveOptionQueue(self.__CreateMoveOption("movelikeaking", 1))
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("ryott", -1))
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("chowkidar", -1))
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("jazair", -1))
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("faujdar", -1))
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("cuirassier", -1))
-        self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("movelikeaking", -1))
 
 class Piece:
     def __init__(self, T, B, P, S):
