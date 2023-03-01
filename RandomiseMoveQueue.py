@@ -20,6 +20,9 @@ class Dastan:
         self.__CreateBoard()
         self.__CreatePieces(NoOfPieces)
         self._CurrentPlayer = self._Players[0]
+        # self.__RandomiseMoveQueue(0)
+        # self.__RandomiseMoveQueue(1)
+        [self.__RandomiseMoveQueue(i) for i in range(len(self._Players))]
 
     def __DisplayBoard(self):
         print("\n" + "   ", end="")
@@ -51,6 +54,7 @@ class Dastan:
         print("Move option offer: " + self._MoveOptionOffer[self._MoveOptionOfferPosition])
         print()
         print(self._CurrentPlayer.GetPlayerStateAsString())
+        self._CurrentPlayer
         print("Turn: " + self._CurrentPlayer.GetName())
         print()
 
@@ -130,6 +134,7 @@ class Dastan:
     def PlayGame(self):
         GameOver = False
         while not GameOver:
+            self._CurrentPlayer.RandomiseQueue()
             self.__DisplayState()
             SquareIsValid = False
             Choice = 0
@@ -296,6 +301,10 @@ class Dastan:
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("faujdar", -1))
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("cuirassier", -1))
 
+    def __RandomiseMoveQueue(self, player):
+        self._Players[player].RandomiseQueue()
+        pass
+
 class Piece:
     def __init__(self, T, B, P, S):
         self._TypeOfPiece = T
@@ -425,6 +434,11 @@ class MoveOptionQueue:
     def GetMoveOptionInPosition(self, Pos):
         return self.__Queue[Pos]
 
+    def Randomise(self):
+        self.__Queue = [self.__Queue.pop(random.randint(0, len(self.__Queue)-1)) for i in range(len(self.__Queue))]
+        # OR
+        # random.shuffle(self.__Queue)
+
 class Player:
     def __init__(self, N, D):
         self.__Score = 100
@@ -467,6 +481,9 @@ class Player:
     def CheckPlayerMove(self, Pos, StartSquareReference, FinishSquareReference):
         Temp = self.__Queue.GetMoveOptionInPosition(Pos - 1)
         return Temp.CheckIfThereIsAMoveToSquare(StartSquareReference, FinishSquareReference)
+
+    def RandomiseQueue(self):
+        self.__Queue.Randomise()
 
 def Main():
     ThisGame = Dastan(6, 6, 4)
